@@ -1,11 +1,11 @@
 # vue-base
-基于 webpack + vue-cli + iview + Vue 构建的一套 Vue 的 单页面应用（SPA）开发方案。
+基于 webpack + vue-cli + iview + Vue 构建的一套 Vue 的 单页面应用（SPA）开发方案。
 
 当然你也可以把 iview 切换成各个你想要的 mobile 或 PC 组件库（mobile 需要自行配置下移动端 html 的 meta 头），来进行敏捷开发。
 ## 功能说明
-* 只需熟悉写法，便可敏捷开发
+* 只需熟悉写法，便可敏捷开发
 * 测试接口和 mock 接口，一键切换
-* 文件层级划分，尽可能减少开发提交碰撞
+* 文件层级划分，尽可能减少开发提交碰撞
 * Service 配置生成 ORM，有命名空间，在业务中快速调用
 * Vuex 可以拆分至不同业务模块中，业务可自行选择是否使用 Vuex 来渐进增强开发
 * 支持打包分析 npm run analyz
@@ -36,7 +36,7 @@
         |-- app.vue        （根vue节点）
         |-- main.js        （业务的根节点 js）
     
-### 脚手架指令
+### 脚手架指令
 
 `npm run dev/start` 开发模式
 `npm run build`     线上打包
@@ -48,9 +48,11 @@
 ``` javascript
 // 接口拦截到需要跳转登录页面的 code 根据业务自行修改
 export const LOGIN_CODE = 1000
+
 // 请求 abort 超时时间
 export const AJAXTIMEOUT = 20000
-// 请求是否会发送本地的请求 
+
+// 请求是否会发送本地的请求 
 // true Service 中的请求会请求 localPath ，也就是 mock 路径，mock 统一发送 get 请求，底层已经帮转好 不用关心， 该配 post 就配置 post
 // false 会走配置的 path 路径，一般就是测试接口和线上接口
 export const LOCAL_AJAX = false
@@ -163,7 +165,7 @@ GLOBAL.vbus.$on('response_error', (resData) => {
 ```
 
 
-### `ajax 和 常量使用规范 ( Service 层)`
+### `ajax 和 常量使用规范 ( Service 层)`
 
 底层使用`axios`，需要了解`API`自行了解`axios`库，需要在`service`中配置好自己的请求发送参数如
 ``` javascript
@@ -197,7 +199,7 @@ GLOBAL.vbus.$on('response_error', (resData) => {
         |-index.js         （主页配置）
         |-order.js         （订单模块）
 ```
-`Service` 层文件命名尽量保持对应，抽象我们的业务，这样我们可以减少很多变量和请求方法的冗余代码，order 模块在 index 中进行配置如下：
+`Service` 层文件命名尽量保持对应，抽象我们的业务，这样我们可以减少很多变量和请求方法的冗余代码，order 模块在 index 中进行配置如下：
 
 ```javascript
 import { Apior } from 'Utils/apior'
@@ -208,7 +210,7 @@ export default new Apior({
     order
 })['API']
 ```
-这样 Apior 会自动用 order 来作为前缀，做一层命名空间，放到$service中。
+这样 Apior 会自动用 order 来作为前缀，做一层命名空间，放到$service中。
 
 业务中调用方式
 ``` javascript
@@ -418,7 +420,7 @@ import DashboardIndex from 'Pages/dashboard/index'
 
 在通常的业务中，通常会把所有 `store` 都放到一个目录下，通过 `modules` 来拆分，现实很美好，科室后台系统这种业务，其实模块与模块之间的交互并不高，可以说是基本没有，所以随着业务的增长，`store` 下的对应的module越来越多，在 `store` 和 `pages` 中来回切换就非常耗时。
 
-好在 `vuex@2.3.1 `之后添加了 `registerModule` 和 `unregisterModule` 2个方法，让我们能把 `store` 中的 `module` 分散到对应的业务当中。
+好在 `vuex@2.3.1 `之后添加了 `registerModule` 和 `unregisterModule` 2个方法，让我们能把 `store` 中的 `module` 分散到对应的业务当中。
 
 
 使用都是跟着路由的生命周期完成的，这里并不是真正的把`store`移除，实质上只是在当前的`store`树上解除了引用关系，下来再次加回来的时候状态都还在。如果想要每次都是新的状态，应该在`state`的声明的时候返回一个纯函数，每次使用的时候都是新的状态。
@@ -492,7 +494,7 @@ methods: {
 
 
 #### 业务功能集中
-请把数据直接放在 `src/store` 下，用 `module` 来划分。
+请把数据直接放在 `src/store` 下，用 `module` 来划分。
 
 ### `actions` 命名规范
 
@@ -512,7 +514,7 @@ methods: {
 
 ### `pages` 文件夹下命名规范
 
-原子命名和尽量全部都小写
+原子命名和尽量全部都小写
 
 比如有一个目录结构是：
 

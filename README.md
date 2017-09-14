@@ -1,15 +1,17 @@
-# vue-template
+# vue-base
 基于 webpack + vue-cli + iview + Vue 构建的一套 Vue 的 单页面应用（SPA）开发方案。
+
+当然你也可以把 iview 切换成各个你想要的 mobile 或 PC 组件库（mobile 需要自行配置下移动端 html 的 meta 头），来进行敏捷开发。
 ## 功能说明
 * 只需熟悉写法，便可敏捷开发
-* 测试接口和mock接口，一键切换
+* 测试接口和 mock 接口，一键切换
 * 文件层级划分，尽可能减少开发提交碰撞
-* Service 配置生成ORM，有命名空间，在业务中快速调用
-* Vuex 可以拆分至不同业务模块中，业务可自行选择是否使用Vuex 来渐进增强开发
+* Service 配置生成 ORM，有命名空间，在业务中快速调用
+* Vuex 可以拆分至不同业务模块中，业务可自行选择是否使用 Vuex 来渐进增强开发
 * 支持打包分析 npm run analyz
 * 支持异步组件加载
 * 支持缓存层分离
-* webpack 图片处理
+* webpack 图片处理等等
 
 ### 目录结构
 
@@ -33,16 +35,24 @@
         |-- utils          （工具层）
         |-- app.vue        （根vue节点）
         |-- main.js        （业务的根节点 js）
+    
+### 脚手架指令
+
+`npm run dev/start` 开发模式
+`npm run build`     线上打包
+`npm run analyz`    包分析( `webpack-bundle-analyzer` )
 
 ### 逻辑修改
 
 修改文件目录中的```src\js\config\index.js```
 ``` javascript
-// 接口拦截到需要跳转登录页面的 code
+// 接口拦截到需要跳转登录页面的 code 根据业务自行修改
 export const LOGIN_CODE = 1000
 // 请求 abort 超时时间
 export const AJAXTIMEOUT = 20000
-// 请求是否会发送本地的请求
+// 请求是否会发送本地的请求 
+// true Service 中的请求会请求 localPath ，也就是 mock 路径，mock 统一发送 get 请求，底层已经帮转好 不用关心， 该配 post 就配置 post
+// false 会走配置的 path 路径，一般就是测试接口和线上接口
 export const LOCAL_AJAX = false
 
 export const DEBUG = {
@@ -152,9 +162,6 @@ GLOBAL.vbus.$on('response_error', (resData) => {
 ...
 ```
 
-### 启动
-
-    BM server // 启动该项目，该项目会自动打开浏览器
 
 ### `ajax 和 常量使用规范 ( Service 层)`
 
@@ -305,39 +312,7 @@ console.log(CONSTS['other/MENU'])
 
 ### `router` 路由
 
-命名尽量遵循`父级路由.当前路由`的规则，一般路由路径不能超过三层，需要考虑效率问题
-
-路由配置文件在 `config/router` 中，路由配置规则尽量遵循父子路由的关系，子路由都配置在父路由的 `children` 属性中，配置自路由的好处是在打开子路由返回的时候，父级路由的转台都还保存着
-
-订单模块，有搜索条件的页面，搜索结果列表页面，搜索详情页面，构造出来的路由如下：
-``` javascript
-{
-    path: '/order',
-    component: Order,
-    children: [{
-        path: '/search',
-        component: Search
-    },{
-        path: '/list',
-        component: List,
-        children: [{
-            path: '/detail',
-            component: Detail
-        }]
-    }]
-}
-```
-
-父路由中模板文件也需要增加对应的自路由组件
-
-``` javascript
-<transition name="child">
-    <router-view></router-view>
-</transition>
-```
-
-路由中也支持`懒加载`
-懒加载的最终实现方案
+支持异步加载组件，但不建议所有组件都异步加载，请熟知异步加载组件的使用场景。（以下出自[vue2组件懒加载浅析](http://www.cnblogs.com/zhanyishu/p/6587571.html)）
 
 　　1、路由页面以及路由页面中的组件全都使用懒加载
 
@@ -365,10 +340,81 @@ console.log(CONSTS['other/MENU'])
 
 懒加载组件(路由)写法
 ``` javascript
-component:resolve => require(['Pages/index'], resolve)
+import DashboardIndex from 'Pages/dashboard/index'
+{
+    name: "index",
+    path: "/",
+    component:resolve => require(['Pages/index'], resolve), // 异步加载组件写法
+    children: [{
+        name: "dashboard",
+        path: "dashboard",
+        component: resolve => DashboardIndex                // 同步打包加载
+    }]
+}
 ```
 
+### 模块的构成
+
+当划分出一个子模块之后，我们不能简单粗暴的用一个 `.vue` 文件把所有业务逻辑完成，除非你的模块功能非常单一，其他的情况，我们希望把模块进行划分，由多个子 `component` 组成，划分的粒度也需要自己掌握，粒度越细越灵活，但也意味着 `component` 间的交互会变得复杂。
+
+比如我们划分出了三个模块 `header`、`list`、`footer`，我们的目录结构按照上面的继续写就会是
+
+``` javascript
+	hosmanager
+		hoslist
+			index.vue
+            store
+                index.js
+                actions.js
+                modules
+                    header.js
+                    list.js
+                    footer.js
+            components
+                header.vue
+                list                // 如果业务非常复杂可做一下拆分
+                    index.vue		// 参照 
+                footer.vue
+```
+
+`hoslist/index.vue` 仅仅是作为组织文件，将三个子模块引入，并且做好架子的角色，如 `html` 中的布局，如果 `component` 间需要事件交互，这个文件也可以充当中介者的角色。
+
+### 组件交互
+兄弟组件
+
+    父组件向子组件传递数据:
+    props
+
+    子组件向父组件抛出事件:
+    vm.$emit('xxx')
+
+    父组件用v-on:xxx="func"来接子组件触发的事件和暴露的数据
+
+虽然vue还提供了`$ref`和`$parent`来让我们访问其他组件的数据和方法，但为了工程的可维护性，让我们的数据变化的追踪变得有规律可循，我们应尽量避免他们的使用
+
+非兄弟组件
+有时候非父子关系的组件也需要通信。在简单的场景下，使用一个空的 `Vue 实例作为中央事件总线`
+
+业务简单:
+
+    var bus = new Vue()
+
+    // 触发组件 A 中的事件
+    bus.$emit('id-selected', 1)
+
+    // 在组件 B 创建的钩子中监听事件
+    bus.$on('id-selected', (id) => {
+    // ...
+    })
+
+业务复杂:
+
+    请直接使用 Vuex
+
+
+
 ### `store` 使用（ `vuex` ）
+#### 业务功能分散 
 
 在通常的业务中，通常会把所有 `store` 都放到一个目录下，通过 `modules` 来拆分，现实很美好，科室后台系统这种业务，其实模块与模块之间的交互并不高，可以说是基本没有，所以随着业务的增长，`store` 下的对应的module越来越多，在 `store` 和 `pages` 中来回切换就非常耗时。
 
@@ -377,7 +423,36 @@ component:resolve => require(['Pages/index'], resolve)
 
 使用都是跟着路由的生命周期完成的，这里并不是真正的把`store`移除，实质上只是在当前的`store`树上解除了引用关系，下来再次加回来的时候状态都还在。如果想要每次都是新的状态，应该在`state`的声明的时候返回一个纯函数，每次使用的时候都是新的状态。
 
+就拿上面模块层级来举例：
+`hoslist/store/index.js` 我们编写注册store的方法
+```javascript
+import store from 'Store'
+import * as actions  from './actions'
+
+import header from './modules/header'
+import list from './modules/list'
+import footer from './modules/footer'
+
+export default {
+    install(){
+        store.registerModule(['hoslist'], {
+            actions,
+            modules: {
+                header,
+                list,
+                footer
+            },
+            namespace: true
+        })
+    },
+    uninstall(){
+        store.unregisterModule(['hoslist']);
+    }
+}
+
+```
 ``` javascript
+// hoslist/index.vue 中
 beforeRouteEnter(to, from, next) {
     store.install()
     next()
@@ -387,6 +462,37 @@ beforeRouteLeave(to, from, next) {
     next()
 }
 ```
+`hoslist/index.vue` 中
+
+``` javascript
+// hoslist/index.vue 中
+beforeRouteEnter(to, from, next) {
+    store.install()
+    next()
+},
+beforeRouteLeave(to, from, next) {
+    store.uninstall()
+    next()
+}
+```
+这样我们就在业务中使用了。
+```javascript
+this.$store.commit('header/xxx')
+this.$store.commit('list/xxx')
+this.$store.commit('footer/xxx')
+
+computed: {
+    ...mapGetters('header', ['headerGetter1', 'headerGetter2'])
+}
+
+methods: {
+    ...mapActions(['acton_methods'])
+}
+```
+
+
+#### 业务功能集中
+请把数据直接放在 `src/store` 下，用 `module` 来划分。
 
 ### `actions` 命名规范
 
@@ -424,75 +530,4 @@ beforeRouteLeave(to, from, next) {
         hoslist
 
 这样看起来会使整个目录整洁，尽量少的文件夹名，也会跟容易让人记得住。
-
-### 模块的构成
-
-当划分出一个子模块之后，我们不能简单粗暴的用一个 `.vue` 文件把所有业务逻辑完成，除非你的模块功能非常单一，其他的情况，我们希望把模块进行划分，由多个子 `component` 组成，划分的粒度也需要自己掌握，粒度越细越灵活，但也意味着 `component` 间的交互会变得复杂。
-
-比如我们划分出了三个模块 `header`、`list`、`footer`，我们的目录结构按照上面的继续写就会是
-
-``` javascript
-	hosManager
-		hosList
-			index.vue
-            store
-                index.js
-                actions.js
-                modules
-                    header.js
-                    list.js
-                    footer.js
-            components
-                header.vue
-                list                // 如果业务非常复杂可做一下拆分
-                    index.vue		// 参照 vue2 官网说明，这个文件是作为引入其他文件存在
-                    index.js	    // js 逻辑文件
-                    index.scss		// 样式文件
-                    index.html		// html 文件
-                footer.vue
-```
-
-`hosList/index.vue` 仅仅是作为组织文件，将三个子模块引入，并且做好架子的角色，如 `html` 中的布局，如果 `component` 间需要事件交互，这个文件也可以充当中介者的角色。
-
-
-
-## `vue` 使用规范
-
-### 组件交互
-兄弟组件
-
-    父组件向子组件传递数据:
-    props
-
-    子组件向父组件抛出事件:
-    vm.$emit('xxx')
-
-    父组件用v-on:xxx="func"来接子组件触发的事件和暴露的数据
-
-虽然vue还提供了`$ref`和`$parent`来让我们访问其他组件的数据和方法，但为了工程的可维护性，让我们的数据变化的追踪变得有规律可循，我们应尽量避免他们的使用
-
-非兄弟组件
-有时候非父子关系的组件也需要通信。在简单的场景下，使用一个空的 `Vue 实例作为中央事件总线`
-
-业务简单:
-
-    var bus = new Vue()
-
-    // 触发组件 A 中的事件
-    bus.$emit('id-selected', 1)
-
-    // 在组件 B 创建的钩子中监听事件
-    bus.$on('id-selected', function (id) {
-    // ...
-    })
-
-业务复杂:
-
-    请直接使用 Vuex
-    actions 中只做异步和分发
-    commit应该按state结构来细分 尽量避免一个commit修改多个 state
-
-## 格式
-
-如果不给代码做格式化就是等于代码没有写。请原谅我是 tab = 4空格档，就必须是这样的
 

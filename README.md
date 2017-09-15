@@ -2,6 +2,8 @@
 基于 webpack + vue-cli + iview + Vue 构建的一套 Vue 的 单页面应用（SPA）开发方案。
 
 当然你也可以把 iview 切换成各个你想要的 mobile 或 PC 组件库（mobile 需要自行配置下移动端 html 的 meta 头），来进行敏捷开发。
+
+此项目无任何页面搭建，业务层要按需拓展。
 ## 功能说明
 * 只需熟悉写法，便可敏捷开发
 * 测试接口和 mock 接口，一键切换
@@ -12,6 +14,24 @@
 * 支持异步组件加载
 * 支持缓存层分离
 * webpack 图片处理等等
+
+## 开始使用
+
+```
+    git clone https://github.com/PerseveranceZ/vue-base.git
+
+    cd vue-base
+
+    npm install
+
+    npm run dev
+```
+
+### 脚手架指令
+
+* `npm run dev/start` 开发模式
+* `npm run build`     线上打包
+* `npm run analyz`    包分析( `webpack-bundle-analyzer` )
 
 ### 目录结构
 
@@ -36,11 +56,6 @@
         |-- app.vue        （根vue节点）
         |-- main.js        （业务的根节点 js）
     
-### 脚手架指令
-
-`npm run dev/start` 开发模式
-`npm run build`     线上打包
-`npm run analyz`    包分析( `webpack-bundle-analyzer` )
 
 ### 逻辑修改
 

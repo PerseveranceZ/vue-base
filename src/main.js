@@ -9,33 +9,26 @@ import store from 'Store'
 import router from './router'
 
 import iView from 'iview'
-import 'iview/dist/styles/iview.css';    // 使用 CSS
-import injector from 'Utils/injector'//插件
-
-import BaiduMap from 'vue-baidu-map'
-
+import 'iview/dist/styles/iview.css'; // 使用 CSS
+import injector from 'Utils/injector' //插件
 
 // import 'Components'// 全局组件注册
 import 'Config/ajax'
-import 'Directives'// 指令
+import 'Directives' // 指令
 
-import {DEBUG} from 'Config/index'
+import { DEBUG } from 'Config/index'
 Vue.config.productionTip = false
 
-Vue.use(injector)//注册业务所需
-Vue.use(iView)//组件库
-Vue.use(BaiduMap, {
-  // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
-  ak: 'YOUR_APP_KEY'
-})
+Vue.use(injector) //注册业务所需
+Vue.use(iView) //组件库
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  store,
-  template: '<App/>',
-  components: { App }
+    el: '#app',
+    router,
+    store,
+    template: '<App/>',
+    components: { App }
 })
 
 

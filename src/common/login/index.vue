@@ -2,38 +2,38 @@
     <transition name="bounce" enter-active-class="fadeInDown" leave-active-class="bounceOutUp">
         <div class="home-container" v-show="$store.state.toLogin">
             <div class="home-login-container">
-                <div class="home-login-logo">
-                    TOMATO
-                </div>
-                <transition name="bounce" enter-active-class="fadeInLeft" leave-active-class="fadeOutLeft" mode="out-in">
-                    <Card style="position:absolute;" v-if="current === 1">
-                        <Form ref="loginForm" :model="loginForm" :rules="loginRules">
-                            <Form-item prop="account">
-                                <Input type="text" v-model="loginForm.account" placeholder="账户">
-                                <Icon type="ios-person-outline" slot="prepend"></Icon>
-                                </Input>
-                            </Form-item>
-                            <Form-item prop="password">
-                                <Input type="password" v-model="loginForm.password" placeholder="密码">
-                                <Icon type="ios-locked-outline" slot="prepend"></Icon>
-                                </Input>
-                            </Form-item>
+                <Card>
+                    <p slot="title" @click="current = 2">
+                        <Icon type="log-in"></Icon>
+                        {{ current === 1 ? '欢迎登录' : '欢迎注册' }}
+                    </p>
+                    <transition name="bounce" enter-active-class="fadeInLeft" leave-active-class="fadeOutLeft" mode="out-in">
+                        <Form class="login-form" ref="loginForm" :model="loginForm" :rules="loginRules"  v-if="current === 1">
+                            <FormItem prop="account" label="用户名">
+                                <Input type="text" v-model="infoForm.account" placeholder="请输入，必填"></Input>
+                            </FormItem>
+                            <FormItem prop="password" label="密码">
+                                <Input type="password" v-model="infoForm.password" placeholder="请输入，必填"></Input>
+                                <!--Input type="password" v-model="loginForm.password" placeholder="密码">
+                                    <span slot="prepend">
+                                        <Icon :size="14" type="locked"></Icon>
+                                    </span>
+                                </Input-->
+                            </FormItem>
                             <Form-item>
                                 <Button type="primary"  :loading="loginLoading" @click="login('loginForm')" long>确认</Button>
                             </Form-item>
                         </Form>
-                    </Card>
-                </transition>
-                <transition name="bounce" enter-active-class="fadeInRight" leave-active-class="fadeOutRight" mode="out-in">
-                    <Card style="position:absolute;" v-if="current === 2">
-                        <Form ref="infoForm" :model="infoForm" :rules="infoRules">
+                    </transition>
+                    <transition name="bounce" enter-active-class="fadeInRight" leave-active-class="fadeOutRight" mode="out-in">
+                        <Form  class="login-form" ref="infoForm" :model="infoForm" :rules="infoRules" v-if="current === 2">
                             <Form-item prop="userName" label="用户名">
                                 <Input type="text" v-model="infoForm.userName" placeholder="请输入，必填"></Input>
                             </Form-item>
                             <Form-item prop="allId" label="部门信息">
-                                 <Cascader v-model="infoForm.allId" :data="deptList" change-on-select placeholder="请选择，必选"></Cascader>
+                                    <Cascader v-model="infoForm.allId" :data="deptList" change-on-select placeholder="请选择，必选"></Cascader>
                             </Form-item>
-    
+
                             <Form-item class="text-center">
                                 <ButtonGroup shape="circle">
                                     <Button :loading="loginLoading" @click="current = 1">返回</Button>
@@ -41,8 +41,8 @@
                                 </ButtonGroup>
                             </Form-item>
                         </Form>
-                    </Card>
-                </transition>
+                    </transition>
+                </Card>
             </div>
         </div>
         </div>
@@ -56,7 +56,7 @@ export default {
     name: 'Login',
     data() {
         return {
-            current: 1,
+            current: 2,
             deptList: [],
             loginForm: {
                 account: '',

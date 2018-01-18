@@ -1,5 +1,5 @@
 <template>
-    <Breadcrumb style="margin-bottom: 17px;" v-if="breadcrumb.length">
+    <Breadcrumb style="margin-bottom: 17px;">
         <Breadcrumb-item :key="index" :href="item.route" v-for="(item, index) in breadcrumb">{{item.label}}</Breadcrumb-item>
         <Breadcrumb-item v-if="$route.path.indexOf('/detail')>-1">详情</Breadcrumb-item>
         <Breadcrumb-item v-if="$route.path.indexOf('api_list/debug')>-1">接口调试</Breadcrumb-item>
@@ -24,11 +24,7 @@ export default {
                 }
             });
             return _breadcrumb || [];
-            
         }
-    },
-    methods: {
-        // ...mapActions('home', ['ADD_COUNT'])
     }
 }
 </script>

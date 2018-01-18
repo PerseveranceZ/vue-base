@@ -58,7 +58,6 @@ export default {
         },
         init() {
             this.getUserInfo()
-            
         }
     },
     created() {
@@ -75,7 +74,7 @@ export default {
     }
 }
 </script>
-<style>
+<style lang="scss">
 @import './assets/style/index.scss';
 </style>
 

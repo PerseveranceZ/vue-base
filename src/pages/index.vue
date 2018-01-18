@@ -1,68 +1,90 @@
 <template>
-    <!--<div class="layout" v-if="!$store.state.toLogin">
-        <div class="layout-content">
-            <div class="layout-left">
-                <LayoutHeader></LayoutHeader>
-                <LayoutNavbar></LayoutNavbar>
-                <LayoutManage></LayoutManage>
-            </div>
-            <div class="layout-content-wapper">
-                <div class="layout-content-main">
-                    <transition name="move" mode="out-in">
-                        <router-view></router-view>
-                    </transition>
-                    <div class="layout-copy">
-                    Copyright © 2017 
+    <div class="main" v-if="!$store.state.toLogin">
+        <div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
+            <LayoutShrinkableMenu
+                :shrink="shrink">
+                <div slot="top" class="logo-con">
+                    <img v-show="!shrink"  src="../assets/image/logo.jpg" key="max-logo" />
+                    <img v-show="shrink" src="../assets/image/logo-min.jpeg" key="min-logo" />
+                </div>
+            </LayoutShrinkableMenu>
+        </div>
+        <div class="main-header-con" :style="{paddingLeft: shrink?'60px':'200px'}">
+            <div class="main-header">
+                <div class="navicon-con">
+                    <Button :style="{transform: 'rotateZ(' + (this.shrink ? '-90' : '0') + 'deg)'}" type="text" @click="shrink = !shrink;">
+                        <Icon type="navicon" size="32"></Icon>
+                    </Button>
+                </div>
+                <div class="header-middle-con">
+                    <div class="main-breadcrumb">
+                        <LayoutBreadcrumb></LayoutBreadcrumb>
+                    </div>
+                </div>
+                <div class="header-avator-con">
+                    <MessageTip v-model="mesCount"></MessageTip>
+                    <div class="user-dropdown-menu-con">
+                        <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
+                            <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown">
+                                <a href="javascript:void(0)">
+                                    <span class="main-user-name">{{ userinfoGetter.userName }}</span>
+                                    <Icon type="arrow-down-b"></Icon>
+                                </a>
+                                <DropdownMenu slot="list">
+                                    <DropdownItem name="loginout" divided>退出登录</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                            <Avatar :src="userinfoGetter.avatorPath" style="background: #619fe7;margin-left: 10px;"></Avatar>
+                        </Row>
                     </div>
                 </div>
             </div>
+            <div class="tags-con">
+                <TagsPageOpened></TagsPageOpened>
+            </div>
         </div>
-    </div>-->
-    <div>
-        主页
-        <div class="ccccccccccccc">样式测试</div>
-        <Button @click="jump">路由懒加载跳转</Button>
-        <Button @click="getApi">发送Service层请求</Button>
-        <Button @click="popDownLogin">弹出登录页</Button>
-        <Button @click="popUpLogin">收起登录页</Button>
-        {{$consts['other/MENU']}}
-        <transition name="move" mode="out-in">
-            <router-view></router-view>
-        </transition>
+        <div class="single-page-con" :style="{left: shrink?'60px':'200px'}">
+            <div class="single-page">
+                <transition name="move" mode="out-in">
+                    <router-view></router-view>
+                </transition>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-    // import LayoutHeader from 'Common/header/index'
-    // import LayoutNavbar from 'Common/navbar/index'
-    // import LayoutManage from 'Common/manage/index'
-    // import LayoutBreadcrumb from 'Common/breadcrumb/index'
-
+    import TagsPageOpened from 'Common/tagsPageOpened';
+    import MessageTip from 'Common/messageTip';
+    import LayoutBreadcrumb from 'Common/breadcrumb';
+    import LayoutShrinkableMenu from 'Common/shrinkableMenu';
+    import {
+        mapActions,
+        mapGetters
+    } from 'vuex';
     export default {
-    //     components: {
-    //         LayoutHeader,
-    //         LayoutNavbar,
-    //         LayoutManage,
-    //         LayoutBreadcrumb,
-    //         IndexModal
-    //     }
-    // }
+        components: {
+            MessageTip,
+            TagsPageOpened,
+            LayoutBreadcrumb,
+            LayoutShrinkableMenu
+        },
+        data() {
+            return {
+                shrink: false,
+                userName: '',
+                isFullScreen: false,
+                mesCount: 3
+            }
+        },
+        computed: {
+            ...mapGetters(['userinfoGetter']),
+        },
         methods :{
-            jump() {
-                this.$router.push({
-                    name: 'dashboard'
-                })
-            },
-            getApi() {
-                this.$apis['other/test']({
-                    a:2,
-                    b:2,
-                    c:3
-                }, {
-                    noShowDefaultError: true
-                }).then(resData => {
-                    console.log(resData)
-                })
+            handleClickUserDropdown(name){
+                if(name === 'loginout'){
+                    this.$store.commit('SET_TO_LOGOU')
+                }
             },
             popDownLogin() {
                 this.$store.commit('SET_TO_LOGIN_PATH', this.$route.path)
@@ -74,3 +96,5 @@
         }
     }
 </script>
+<style scope lang="scss" src="./index.scss">
+</style>

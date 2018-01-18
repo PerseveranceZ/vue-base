@@ -2,18 +2,17 @@
  * @Author: songqi
  * @Date:   2016-06-29 22:06:00
  * @Email:  songqi@benmu-health.com
-* @Last modified by:   songqi
-* @Last modified time: 2016-07-12
+ * @Last modified by:   songqi
+ * @Last modified time: 2016-07-12
  */
 
-
-var _ = require('lodash');
+import _isArray from 'lodash/isArray'
 
 /**
  * [nameKey 命名空间]
  * @type {String}
  */
-var nameKey = 'win-';
+var nameKey = 'cms-';
 
 /**
  * [_get 获取 localstroage 值]
@@ -52,7 +51,7 @@ function _set(key, value) {
  * @param  {[Object]}   keys [内存中的 key]
  */
 function _remove(keys) {
-    if (_.isArray(keys)) {
+    if (_isArray(keys)) {
         keys.map(function(item) {
             localStorage.removeItem(nameKey + item);
         });
@@ -70,7 +69,7 @@ function _clear() {
     localStorage.clear();
 }
 
-module.exports = {
+export default {
     get: _get,
     set: _set,
     clear: _clear,

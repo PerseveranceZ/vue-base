@@ -2,8 +2,7 @@ import Ajax from 'Config/ajax'
 import _pick from 'lodash/pick'
 import _assign from 'lodash/assign'
 import _isEmpty from 'lodash/isEmpty'
-import { LOCAL_AJAX, TESTPATH } from 'Config'
-
+import { LOCAL_AJAX, TEST_PATH } from 'Config'
 /**
  * Apior
  * @description 简易的api组装器，自动添加命名空间
@@ -13,21 +12,21 @@ export class Apior {
     constructor(map = {}, type = "API") {
         this._apiMap = {}
         this._constMap = {}
-        if(type === "API") {
+        if (type === "API") {
             // Object.keys(apiMap)。。。。返回以apiMap下所有key键组成的数组。
             Object.keys(map).map((key) => {
                 // 每个key（即）所对应的所有接口对象。
                 this.makeApiMap(key, map[key])
             })
-            return this._apiMap 
+            return this._apiMap
         }
-        if(type === "CONST") {
+        if (type === "CONST") {
             // Object.keys(apiMap)。。。。返回以apiMap下所有key键组成的数组。
             Object.keys(map).map((key) => {
                 // 每个key（即）所对应的所有接口对象。
                 this.makeConstMap(key, map[key])
             })
-            return this._constMap 
+            return this._constMap
         }
     }
 
@@ -62,15 +61,15 @@ export class Apior {
         consts.map((cst, key) => {
             let constMap = this._constMap,
                 constName = name + '/' + cst.name
-            Object.defineProperty(constMap, constName, { value:cst.value })
+            Object.defineProperty(constMap, constName, { value: cst.value })
         })
     }
 }
 
 function normoalize(options, data) {
-    if(options.method === 'POST') {
+    if (options.method === 'POST') {
         options.data = data
-    }else if (options.method === 'GET') {
+    } else if (options.method === 'GET') {
         options.params = data
     }
     return options

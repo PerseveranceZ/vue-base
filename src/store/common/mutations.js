@@ -11,6 +11,10 @@ export const state = {
 
 //全局mutations
 export const mutations = {
+    ['SET_TO_LOGOU'](state) {
+        console.log('登出')
+        state.toLogin = true;
+    },
     ['SET_TO_LOGIN'](state, boolean) {
         state.toLogin = boolean
     },
